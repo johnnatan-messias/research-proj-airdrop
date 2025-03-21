@@ -119,8 +119,8 @@ class Utils:
         return data
 
     @staticmethod
-    def transfer_to_dataframe(events, amount_colum="amount", 
-                              dataframe_func=pl.DataFrame, 
+    def transfer_to_dataframe(events, amount_colum="amount",
+                              dataframe_func=pl.DataFrame,
                               sender="from", receiver="to"):
         # Convert Transfer events data to dataframe
         df = list()
