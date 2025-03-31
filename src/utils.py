@@ -927,6 +927,11 @@ events_dict['0x8629b200ebe43db58ad688b85131d53251f3f3be4c14933b4641aeebacf1c08c'
 }
 
 
+events_dict['0x4ec90e965519d92681267467f775ada5bd214aa92c0dc93d90a5e880ce9ed026'] = {
+    'name': 'Claimed', 'signature': 'Claimed(uint256,address,uint256)'
+}
+
+
 def get_event_name(signature):
     if signature in events_dict:
         return events_dict[signature]['name']
