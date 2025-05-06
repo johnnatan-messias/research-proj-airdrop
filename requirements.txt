@@ -7,3 +7,4 @@ plotly==5.24.1
 web3==7.8.0
 google-cloud-bigquery==3.29.0
 pandas-gbq==0.23.1
+dune-client==1.7.9
