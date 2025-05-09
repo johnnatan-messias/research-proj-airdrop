@@ -1,5 +1,6 @@
 # Function to Compute Hop Distribution in Parallel with Error Handling
 import os
+import time
 import gzip
 import pickle
 import json
@@ -117,7 +118,8 @@ def process_protocols(protocols):
     claim_receivers = addresses["claim_receivers"]
 
     for protocol in tqdm(protocols, "Processing protocols"):
-        print(">>>>", protocol)
+        start_time = time.time()
+        print(">>>>", protocol.upper())
         # Load graph from file
         graph = load_graph_from_gzip(protocol=protocol)
 
@@ -128,13 +130,16 @@ def process_protocols(protocols):
         # print("Hop distribution:")
         # print(hop_distribution.describe(percentiles=percentiles).T)
         persist_hop_distribution(hop_distribution.to_list(), protocol)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"Execution time for {protocol}: {elapsed_time:.4f} seconds")
 
 
 # Main function to demonstrate usage
 def main():
     protocols = ["tornado", "ens", "dydx", "1inch", "gemstone",
                  "arkham", "lido", "arbitrum", "optimism", "uniswap"]
-    process_protocols(protocols)
+    process_protocols(protocols[:1])
 
 
 if __name__ == "__main__":
