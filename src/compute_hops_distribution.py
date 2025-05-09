@@ -139,7 +139,7 @@ def process_protocols(protocols):
 def main():
     protocols = ["tornado", "ens", "dydx", "1inch", "gemstone",
                  "arkham", "lido", "arbitrum", "optimism", "uniswap"]
-    process_protocols(protocols[:1])
+    process_protocols(protocols)
 
 
 if __name__ == "__main__":
