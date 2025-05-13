@@ -18,22 +18,23 @@ percentiles = [.01, .05, .1, .2, .25, .50, .75, .8, .9, .95, .99]
 
 
 # Function to compute hop distribution for a single node
-def compute_hop_for_node(graph, target_set, node):
+def compute_hop_for_node(graph, target_set, source_node):
     try:
-        paths = nx.single_source_shortest_path_length(graph, node)
+        paths = nx.single_source_shortest_path_length(
+            G=graph, source=source_node)
         return [hops for target, hops in paths.items() if target in target_set]
     except Exception as e:
-        print(f"Error computing hop for node {node}: {e}")
+        print(f"Error computing hop for source_node {source_node}: {e}")
         return []
 
 
 # Parallel function to compute hop distribution with error handling
 def compute_hop_distribution_parallel(graph, exchange_addresses, claim_receivers):
-    num_workers = cpu_count() - 1
-    target_set = {
-        target for target in exchange_addresses if graph.has_node(target)}
+    num_workers = max(1, cpu_count() - 1)
     source_set = {
-        claimer for claimer in claim_receivers if graph.has_node(claimer)}
+        address for address in exchange_addresses if graph.has_node(address)}
+    target_set = {
+        address for address in claim_receivers if graph.has_node(address)}
 
     func = partial(compute_hop_for_node, graph, target_set)
 
@@ -43,7 +44,7 @@ def compute_hop_distribution_parallel(graph, exchange_addresses, claim_receivers
         except Exception as e:
             print(f"Error during parallel processing: {e}")
             traceback.print_exc()
-            return pd.Series([])
+            return pd.Series([], dtype=int)
 
     hop_counts = [hop for sublist in results for hop in sublist]
     return pd.Series(hop_counts)
@@ -77,20 +78,20 @@ def load_addresses():
     return addresses
 
 
-# Function to Compute Hop Distribution
-def compute_hop_distribution(graph, exchange_addresses, claim_receivers):
-    hop_counts = []
-    target_set = {
-        target for target in exchange_addresses if graph.has_node(target)}
-    source_set = {
-        claimer for claimer in claim_receivers if graph.has_node(claimer)}
+# # Function to Compute Hop Distribution
+# def compute_hop_distribution(graph, exchange_addresses, claim_receivers):
+#     hop_counts = []
+#     source_set = {
+#         address for address in exchange_addresses if graph.has_node(address)}
+#     target_set = {
+#         address for address in claim_receivers if graph.has_node(address)}
 
-    for node in source_set:
-        paths = nx.single_source_shortest_path_length(graph, node)
-        hop_counts.extend(
-            [hops for target, hops in paths.items() if target in target_set])
+#     for node in source_set:
+#         paths = nx.single_source_shortest_path_length(graph, node)
+#         hop_counts.extend(
+#             [hops for target, hops in paths.items() if target in target_set])
 
-    return pd.Series(hop_counts)
+#     return pd.Series(hop_counts)
 
 
 def check_for_hops(graph, exchange_addresses, claim_receivers):
@@ -98,6 +99,11 @@ def check_for_hops(graph, exchange_addresses, claim_receivers):
     hop_distribution = dict()
     print(len(claim_receivers), len(exchange_addresses))
 
+    # Precompute all shortest paths from exchange addresses. (Exchange -> Node).reverse() -----> Node -> Exchange
+    # This makes the code to run faster since the set of exchange addresses are much smaller than the claimers addresses.
+    print("Reversing graph...")
+    graph = graph.reverse()
+    print("Graph reversed!")
     hop_distribution = compute_hop_distribution_parallel(
         graph, exchange_addresses=exchange_addresses, claim_receivers=claim_receivers)
 
@@ -139,6 +145,7 @@ def process_protocols(protocols):
 def main():
     protocols = ["tornado", "ens", "dydx", "1inch", "gemstone",
                  "arkham", "lido", "arbitrum", "optimism", "uniswap"]
+    protocols = ["ens"]
     process_protocols(protocols)
 
 
