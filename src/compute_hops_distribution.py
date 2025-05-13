@@ -19,34 +19,36 @@ percentiles = [.01, .05, .1, .2, .25, .50, .75, .8, .9, .95, .99]
 
 # Function to compute hop distribution for a single node
 def compute_hop_for_node(graph, target_set, source_node):
-    try:
-        paths = nx.single_source_shortest_path_length(
-            G=graph, source=source_node)
-        return [hops for target, hops in paths.items() if target in target_set]
-    except Exception as e:
-        print(f"Error computing hop for source_node {source_node}: {e}")
-        return []
+    paths = nx.single_source_shortest_path_length(
+        G=graph, source=source_node)
+    hop_distances = [hops for target,
+                     hops in paths.items() if target in target_set]
+
+    if not hop_distances:
+        return float("inf")  # No reachable target nodes
+
+    return min(hop_distances)
 
 
 # Parallel function to compute hop distribution with error handling
 def compute_hop_distribution_parallel(graph, exchange_addresses, claim_receivers):
     num_workers = max(1, cpu_count() - 1)
     source_set = {
-        address for address in exchange_addresses if graph.has_node(address)}
-    target_set = {
         address for address in claim_receivers if graph.has_node(address)}
+    target_set = {
+        address for address in exchange_addresses if graph.has_node(address)}
 
     func = partial(compute_hop_for_node, graph, target_set)
 
     with mp.Pool(num_workers) as pool:
         try:
-            results = pool.map(func, list(source_set))
+            hop_counts = pool.map(func, list(source_set))
         except Exception as e:
             print(f"Error during parallel processing: {e}")
             traceback.print_exc()
             return pd.Series([], dtype=int)
 
-    hop_counts = [hop for sublist in results for hop in sublist]
+    hop_counts = [hop for hop in hop_counts if hop != float("inf")]
     return pd.Series(hop_counts)
 
 
@@ -78,32 +80,10 @@ def load_addresses():
     return addresses
 
 
-# # Function to Compute Hop Distribution
-# def compute_hop_distribution(graph, exchange_addresses, claim_receivers):
-#     hop_counts = []
-#     source_set = {
-#         address for address in exchange_addresses if graph.has_node(address)}
-#     target_set = {
-#         address for address in claim_receivers if graph.has_node(address)}
-
-#     for node in source_set:
-#         paths = nx.single_source_shortest_path_length(graph, node)
-#         hop_counts.extend(
-#             [hops for target, hops in paths.items() if target in target_set])
-
-#     return pd.Series(hop_counts)
-
-
 def check_for_hops(graph, exchange_addresses, claim_receivers):
     # Compute hop distribution for airdrop addresses
-    hop_distribution = dict()
-    print(len(claim_receivers), len(exchange_addresses))
+    hop_distribution = pd.Series([], dtype=int)
 
-    # Precompute all shortest paths from exchange addresses. (Exchange -> Node).reverse() -----> Node -> Exchange
-    # This makes the code to run faster since the set of exchange addresses are much smaller than the claimers addresses.
-    print("Reversing graph...")
-    graph = graph.reverse()
-    print("Graph reversed!")
     hop_distribution = compute_hop_distribution_parallel(
         graph, exchange_addresses=exchange_addresses, claim_receivers=claim_receivers)
 
@@ -133,8 +113,6 @@ def process_protocols(protocols):
         hop_distribution = check_for_hops(
             graph, exchange_addresses, claim_receivers[protocol])
 
-        # print("Hop distribution:")
-        # print(hop_distribution.describe(percentiles=percentiles).T)
         persist_hop_distribution(hop_distribution.to_list(), protocol)
         end_time = time.time()
         elapsed_time = end_time - start_time
@@ -143,8 +121,8 @@ def process_protocols(protocols):
 
 # Main function to demonstrate usage
 def main():
-    protocols = ["tornado", "ens", "dydx", "1inch", "gemstone",
-                 "arkham", "lido", "arbitrum", "optimism", "uniswap"]
+    protocols = ["tornado", "gemstone", "ens", "dydx", "1inch",
+                 "arkham", "lido", "uniswap", "optimism", "arbitrum"]
     process_protocols(protocols)
 
 
