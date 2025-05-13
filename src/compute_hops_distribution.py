@@ -145,7 +145,6 @@ def process_protocols(protocols):
 def main():
     protocols = ["tornado", "ens", "dydx", "1inch", "gemstone",
                  "arkham", "lido", "arbitrum", "optimism", "uniswap"]
-    protocols = ["ens"]
     process_protocols(protocols)
 
 
