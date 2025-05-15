@@ -4,11 +4,8 @@ import time
 import gzip
 import pickle
 import json
-import multiprocessing as mp
-from multiprocessing import cpu_count
 import networkx as nx
 import pandas as pd
-from functools import partial
 import traceback
 from tqdm import tqdm
 
@@ -18,37 +15,31 @@ percentiles = [.01, .05, .1, .2, .25, .50, .75, .8, .9, .95, .99]
 
 
 # Function to compute hop distribution for a single node
-def compute_hop_for_node(graph, target_set, source_node):
-    paths = nx.single_source_shortest_path_length(
-        G=graph, source=source_node)
+def compute_hop_for_node(graph, source_set, target_set):
+    paths = nx.multi_source_dijkstra_path_length(
+        G=graph, sources=source_set)
     hop_distances = [hops for target,
                      hops in paths.items() if target in target_set]
 
-    if not hop_distances:
-        return float("inf")  # No reachable target nodes
-
-    return min(hop_distances)
+    return hop_distances
 
 
 # Parallel function to compute hop distribution with error handling
 def compute_hop_distribution_parallel(graph, exchange_addresses, claim_receivers):
-    num_workers = max(1, cpu_count() - 1)
-    source_set = {
-        address for address in claim_receivers if graph.has_node(address)}
-    target_set = {
-        address for address in exchange_addresses if graph.has_node(address)}
+    # Source will be the exchanges
+    source_set = frozenset(
+        address for address in exchange_addresses if graph.has_node(address))
+    # Target will be the accounts
+    target_set = frozenset(
+        address for address in claim_receivers if graph.has_node(address))
 
-    func = partial(compute_hop_for_node, graph, target_set)
+    # Reversing graph to check convert from Address -> Exchange to Exchange -> Address
+    graph_reversed = graph.reverse()
 
-    with mp.Pool(num_workers) as pool:
-        try:
-            hop_counts = pool.map(func, list(source_set))
-        except Exception as e:
-            print(f"Error during parallel processing: {e}")
-            traceback.print_exc()
-            return pd.Series([], dtype=int)
+    hop_counts = compute_hop_for_node(
+        graph=graph_reversed, source_set=source_set, target_set=target_set)
 
-    hop_counts = [hop for hop in hop_counts if hop != float("inf")]
+    hop_counts = [hop for hop in hop_counts if hop > 0]
     return pd.Series(hop_counts)
 
 
@@ -70,23 +61,25 @@ def load_graph_from_gzip(protocol):
 
 
 def load_addresses():
-    addresses = {"exchange_addresses": set(), "claim_receivers": set()}
-    file_path = os.path.join(DATA_DIR, "exchanges_addresses.json")
-    with open(file_path) as f:
-        addresses["exchange_addresses"] = set(json.load(f))
-    file_path = os.path.join(DATA_DIR, "claim_receivers_addresses.json")
-    with open(file_path) as f:
-        addresses["claim_receivers"] = json.load(f)
+    addresses = {"exchange_addresses": set(), "claim_receivers": {}}
+
+    try:
+        with open(os.path.join(DATA_DIR, "exchanges_addresses.json")) as f:
+            addresses["exchange_addresses"] = set(json.load(f))
+
+        with open(os.path.join(DATA_DIR, "claim_receivers_addresses.json")) as f:
+            addresses["claim_receivers"] = json.load(f)
+    except Exception as e:
+        print(f"Error loading addresses: {e}")
+        traceback.print_exc()
+
     return addresses
 
 
 def check_for_hops(graph, exchange_addresses, claim_receivers):
     # Compute hop distribution for airdrop addresses
-    hop_distribution = pd.Series([], dtype=int)
-
     hop_distribution = compute_hop_distribution_parallel(
-        graph, exchange_addresses=exchange_addresses, claim_receivers=claim_receivers)
-
+        graph, exchange_addresses, claim_receivers)
     return hop_distribution
 
 
