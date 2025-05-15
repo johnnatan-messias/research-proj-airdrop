@@ -20,8 +20,6 @@ address,name,distinct_name
 0x7d411c4279a96069fe32de0c0eab4a964e8ed9c4,Aeroswap,Aeroswap Gas Supplier 2
 0x0e8d02ae96b229f112f37502c2a26d66bdbcff1f,Aeroswap,Aeroswap Binance Deposit 1
 0x2ddd202174a72514ed522e77972b461b03155525,Alcumex Exchange,Alcumex Exchange 1
-0xdc1882f350b42ac9a23508996254b1915c78b204,Allbit,Allbit 1
-0xff6b1cdfd2d3e37977d7938aa06b6d89d6675e27,Allbit,Allbit 2
 0x6dfc34609a05bc22319fa4cce1d1e2929548c0d7,AlphaPo,AlphaPo 1
 0x808d0aee8db7e7c74faf4b264333afe8c9ccdba4,AlphaPo,AlphaPo 2
 0x183a6cf1fc6504138d92c9d663094ee774f80038,AlphaPo,AlphaPo 3
@@ -1375,7 +1373,6 @@ address,name,distinct_name
 0x1b3d794bbeecd9240f46dbb3b79f4f71a972e00a,Cryptopia,Cryptopia 3
 0xceed7802ea80992af9da3811c455fd7baa3f644c,Cryptopia,Cryptopia Bankruptcy Sweep
 0xe269e891a2ec8585a378882ffa531141205e92e9,DDEX,DDEX 1
-0x7600977eb9effa627d6bd0da2e5be35e11566341,DEx.top,DEx.top 1
 0xbe774bb4a11c033c68ff0cc515b3316e93e94465,DIFX,DIFX 1
 0x276766330ea4447289df29648474d1bbdb3fee90,DIFX,DIFX 2
 0x58a5b842a629b9d134dfd348c714b7f1d8212253,DIFX,DIFX Deployer 1
@@ -1823,8 +1820,6 @@ address,name,distinct_name
 0xbd6d79f3f02584cfcb754437ac6776c4c6e0a0ec,IDAX,IDAX 2
 0x6e743cdc08f22578f5fe99779aa2edc019363483,IDAX,IDAX 3
 0x408af76966d49e57d79aaa6bd55f5162476b051b,IDAX,IDAX Gas Supplier 1
-0x2a0c0dbecc7e4d658f48e01e3fa353f44050c208,IDEX,IDEX 1
-0xa7a7899d944fe658c4b0a1803bab2f490bd3849e,IDEX,IDEX 2
 0x8af97264482b59c7aa11010907710dee6d8d8c6c,IDEX,IDEX 3
 0x9a79994bf5b887ff7e909498c14dd896c62ff891,IDEX,IDEX 4
 0x154af3e01ec56bc55fd585622e33e3dfb8a248d8,Iconomi,Iconomi 1
@@ -1845,7 +1840,6 @@ address,name,distinct_name
 0x50c85e5587d5611cf5cdfba23640bc18b3571665,JPEX,JPEX Deposits 1
 0xd2f41167a391014bc5df2234be7f3a64a06a9fd7,JPEX,JPEX Gas Supplier 1
 0x0810cc2d46fc76355e33e10f19d3f04d03a11ece,JPEX,JPEX Gas Supplier 2
-0x04f062809b244e37e7fdc21d9409469c989c2342,Joyso,Joyso 1
 0x88880809d6345119ccabe8a9015e4b1309456990,Juno,Juno 1
 0x42d17b7f3532ec2f7c4e4e5e239baa476846e2cd,Kanga Exchange,Kanga Exchange 1
 0x471d113059324321749e097705197a2b44a070fc,Kanga Exchange,Kanga Exchange 2
@@ -2499,7 +2493,6 @@ address,name,distinct_name
 0x3f83fd98d5fa84f3cbf8b275d6a10dfc5605cda2,OKX,OKX 146
 0x9e64afc7bca5f2c6607a5b8c378bcf1ec3531c97,OKX,OKX 147
 0x8d0abeb725fa260521ed54985a5f793141329ae9,OKX,OKX 148
-0x3b3ae790df4f312e745d270119c6052904fb6790,OKX,OKX DEX Aggregation Router
 0xc5a93444cc4da6efb9e6fc6e5d3cb55a53b52396,OKX,OKX Gas Supplier 1
 0x24c654f6b143dc5cae3c02fbb527ca63aa555dbc,OKX,OKX Gas Supplier 2
 0x89fd00b8d2dcee0f40d8699970115bb861241a54,OKX,OKX Gas Supplier 3
