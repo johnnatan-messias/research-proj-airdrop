@@ -1,6 +1,6 @@
 # Airdrops: Giving Money Away Is Harder Than It Seems
 
-This repository shares the scripts and data sets used in the following peer-reviewed academic publication:
+This repository shares the scripts and data sets used in the following academic paper:
 
 * [Airdrops: Giving Money Away Is Harder Than It Seems](./papers/messias-yaish-airdrops.pdf). Johnnatan Messias, Aviv Yaish, and Benjamin Livshits. 2025.
 
@@ -24,7 +24,7 @@ To enable scientific reproducibility of our results we make our pre-processed **
 
 ---
 
-If you find it useful, please consider citing our academic peer-reviewed paper:
+If you find it useful, please consider citing our academic paper:
 
 ```
 @inproceedings{Messias@Airdrop25,
