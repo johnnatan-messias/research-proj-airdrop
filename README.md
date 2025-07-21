@@ -5,8 +5,12 @@ This repository shares the scripts and data sets used in the following peer-revi
 * [Airdrops: Giving Money Away Is Harder Than It Seems](./papers/messias-yaish-airdrops.pdf). Johnnatan Messias, Aviv Yaish, and Benjamin Livshits. 2025.
 
 
+## Jupyter Notebook and code
+To enable scientific reproducibility of our results we make our **scrips set available for download [./notebooks/](./notebooks/)** 📥.
+
 ## Data sets
 To enable scientific reproducibility of our results we make our pre-processed **data set available for download [TBA soon]()** 📥.
+
 
 
 ## Ask a Question
@@ -27,7 +31,7 @@ If you find it useful, please consider citing our academic peer-reviewed paper:
   author = {Johnnatan Messias and Aviv Yaish and Benjamin Livshits},
   title = {{Airdrops: Giving Money Away Is Harder Than It Seems}},
   booktitle = {},
-  month = {April},
+  month = {July},
   year = {2025}
 }
 ```
